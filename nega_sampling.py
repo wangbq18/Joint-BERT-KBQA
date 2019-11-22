@@ -13,9 +13,10 @@ def load_data(file_path):
         sample = {}
         for line in f:
             if line.startswith('<question'):
-                sample['question'] = line.strip().split('\t')[1].strip()
+                sample['question'] = line.strip().split('\t')[1].strip().lower()
             elif line.startswith('<triple'):
-                sample['triple'] = tuple(line.replace('\n', '').split('\t')[1].split(' ||| '))
+                s, p, o = line.replace('\n', '').split('\t')[1].split(' ||| ')
+                sample['triple'] = s.lower(), p.replace(' ', ''), o.lower()
                 assert len(sample['triple']) == 3, (line, sample['triple'])
             elif line.startswith('==='):
                 if sample['triple'][0] in sample['question']:
@@ -34,11 +35,13 @@ def load_knowledge(file_path='NLPCC2017-OpenDomainQA/knowledge/nlpcc-iccpol-2016
     with open(file_path, 'r', encoding='utf-8') as f:
         for line in f:
             s, p, _ = [tmp.strip() for tmp in line.strip().split(' ||| ')]
+            s = s.lower()
+            p = p.replace(' ', '')
             s2p[s].append(p)
     return s2p
 
 if __name__ == "__main__":
-    train_data = load_data('nlpcc-iccpol-2016.kbqa.training-data')
+    train_data = load_data('data/nlpcc-iccpol-2016.kbqa.training-data')
     s2p = load_knowledge()
     for item in tqdm(train_data):
         s, p, _ = item['triple']
@@ -59,8 +62,8 @@ if __name__ == "__main__":
         for sample in train_data:
             f.write(json.dumps(sample, ensure_ascii=False)+'\n')
 
-    test_data = load_data('nlpcc-iccpol-2016.kbqa.testing-data')
-    with open('data/test.json', 'w', encoding='utf-8') as f:
+    test_data = load_data('data/nlpcc-iccpol-2016.kbqa.testing-data')
+    with open('data/dev.json', 'w', encoding='utf-8') as f:
         for sample in test_data:
             f.write(json.dumps(sample, ensure_ascii=False)+'\n')
 

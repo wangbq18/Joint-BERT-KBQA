@@ -3,7 +3,7 @@ NLPCC2017-OpenDomainQA
 msm
 graph
 experiments
-data
+*.json
 __pycache__
 server.py
 statistics.py
