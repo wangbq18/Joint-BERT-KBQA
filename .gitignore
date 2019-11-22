@@ -1,0 +1,9 @@
+.vscode
+NLPCC2017-OpenDomainQA
+msm
+graph
+experiments
+data
+__pycache__
+server.py
+statistics.py
